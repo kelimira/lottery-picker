@@ -1,0 +1,25 @@
+{
+  "name": "ontario-lottery-picker",
+  "version": "1.0.0",
+  "description": "Fancy HTML-based lottery picker for all lotteries available in Ontario",
+  "type": "module",
+  "scripts": {
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc && esbuild src/ui/app.ts --bundle --outfile=dist/bundle.js --format=iife --target=es2022"
+  },
+  "keywords": [
+    "lottery",
+    "ontario",
+    "olg",
+    "lotto-max",
+    "lotto-649"
+  ],
+  "author": "Greg Aligiannis",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.7.3"
+  }
+}

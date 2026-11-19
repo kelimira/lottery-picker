@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ontario Lottery Picker — Official Games Randomizer</title>
+  <style>
+    :root {
+      --bg-dark: #0c1017;
+      --card-bg: rgba(23, 28, 38, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+      --accent-gold: #ffd700;
+      --accent-glow: rgba(255, 215, 0, 0.35);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #17263c 0%, #080d14 70%);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 64px 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+      max-width: 900px;
+    }
+
+    .brand-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, #e2e8f0 70%, var(--accent-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      justify-content: center;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .main-layout {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    /* Game Selector Tabs */
+    .game-tabs-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .game-tabs {
+      display: flex;
+      gap: 10px;
+      min-width: max-content;
+    }
+
+    .game-tab {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-top: 3px solid var(--brand-color, #fff);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      transition: all 0.2s ease;
+      min-width: 135px;
+      text-align: left;
+    }
+
+    .game-tab:hover {
+      background: rgba(35, 43, 58, 0.9);
+      transform: translateY(-2px);
+    }
+
+    .game-tab.active {
+      background: rgba(40, 52, 73, 0.95);
+      border-color: var(--accent-color, #ffd700);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-tab-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .game-tab-prize {
+      font-size: 0.75rem;
+      color: var(--accent-color, #ffd700);
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Game Banner */
+    .game-banner {
+      border-left: 4px solid #fff;
+      padding-left: 16px;
+      margin-bottom: 20px;
+    }
+
+    .banner-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .game-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .category-badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .game-tagline {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .banner-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    .special-feature {
+      margin-top: 4px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: #fef08a;
+    }
+
+    /* Form Controls */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .checkboxes-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000;
+      border: none;
+      padding: 14px 20px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(245, 158, 11, 0.5);
+    }
+
+    .secondary-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Ticket Receipt Display */
+    .ticket-display-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 480px;
+    }
+
+    .ticket-receipt {
+      background: #fdfdfd;
+      color: #1a1a1a;
+      width: 100%;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+      position: relative;
+      font-family: "Courier New", Courier, monospace;
+      border-top: 6px dashed #ccc;
+      border-bottom: 6px dashed #ccc;
+    }
+
+    .receipt-header {
+      text-align: center;
+      border-bottom: 2px dashed #999;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .receipt-brand {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #666;
+    }
+
+    .receipt-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin: 4px 0;
+      letter-spacing: 0.05em;
+    }
+
+    .receipt-id {
+      font-size: 0.75rem;
+      color: #777;
+    }
+
+    .receipt-date {
+      font-size: 0.7rem;
+      color: #999;
+    }
+
+    .receipt-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .line-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px dotted #ddd;
+      padding-bottom: 10px;
+    }
+
+    .line-index {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .line-stats {
+      font-size: 0.7rem;
+      color: #888;
+      font-style: italic;
+    }
+
+    /* Balls styling */
+    .balls-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ball {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #cbd5e1 30%, #475569 90%);
+      color: #0f172a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-stack);
+      font-weight: 800;
+      font-size: 1.05rem;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                  inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                  0 4px 8px rgba(0, 0, 0, 0.25);
+      position: relative;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+
+    .ball-inner {
+      z-index: 2;
+    }
+
+    .grand-ball {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff7ed 0%, #f59e0b 45%, #b45309 90%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-stack);
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                  inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                  0 4px 8px rgba(245, 158, 11, 0.4);
+    }
+
+    .hidden-ball {
+      opacity: 0;
+      transform: scale(0.3) translateY(20px);
+    }
+
+    .revealed {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Digits Group */
+    .digits-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .digit-box {
+      width: 40px;
+      height: 46px;
+      background: #1e293b;
+      color: #f8fafc;
+      font-family: var(--font-stack);
+      font-weight: 900;
+      font-size: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Cards Group */
+    .cards-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .card-chip {
+      width: 52px;
+      height: 72px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-stack);
+      font-weight: 800;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .card-chip:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-red {
+      color: #dc2626;
+    }
+
+    .card-black {
+      color: #0f172a;
+    }
+
+    .card-rank {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .card-suit {
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    /* Extras */
+    .receipt-extra {
+      margin-top: 12px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .gold-ball-box {
+      background: #fef9c3;
+      border-color: #facc15;
+      font-weight: 700;
+    }
+
+    .encore-box {
+      background: #f3e8ff;
+      border-color: #d8b4fe;
+      font-weight: 700;
+    }
+
+    .receipt-footer {
+      text-align: center;
+      border-top: 2px dashed #999;
+      padding-top: 12px;
+      margin-top: 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #666;
+    }
+
+    .receipt-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .receipt-actions button {
+      flex: 1;
+    }
+
+    /* Mega-Slip */
+    .mega-slip-container {
+      background: #ffffff;
+      color: #111;
+      border-radius: 8px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .mega-slip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .mega-slip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mega-ticket-card {
+      border: 1px solid #e2e8f0;
+      border-top: 4px solid #333;
+      border-radius: 6px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .mega-ticket-card h4 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .extra-item {
+      margin-top: 6px;
+      font-size: 0.75rem;
+      padding: 4px 6px;
+      border-radius: 4px;
+    }
+
+    .extra-item.gold-ball {
+      background: #fef08a;
+    }
+
+    .extra-item.encore {
+      background: #e9d5ff;
+    }
+
+    /* History Panel */
+    .history-section {
+      margin-top: 32px;
+      width: 100%;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .history-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .history-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+    }
+
+    .history-item-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .history-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .history-summary {
+      color: var(--accent-gold);
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .empty-history {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+      }
+
+      header, .game-tabs-wrapper, .panel:first-child, .receipt-actions, .history-section, .top-controls {
+        display: none !important;
+      }
+
+      .main-layout {
+        display: block !important;
+      }
+
+      .dashboard-grid {
+        display: block !important;
+      }
+
+      .panel {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+
+      .ticket-receipt {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        width: 100% !important;
+        max-width: 450px !important;
+        margin: 0 auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand-tag">Ontario Lottery & Gaming Corporation (OLG) Picker</div>
+    <h1>Ontario Lottery Picker</h1>
+    <p class="subtitle">Official odds, schedules, bundles, and cryptographically secure ticket generator for all 11 Ontario lotteries</p>
+    <div class="top-controls">
+      <button type="button" class="icon-btn" id="sound-toggle" aria-pressed="true">🔊 Sound: ON</button>
+      <button type="button" class="icon-btn" id="print-ticket-btn">🖨️ Print Playslip</button>
+      <button type="button" class="icon-btn" id="copy-ticket-btn">📋 Copy Ticket</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <div class="game-tabs-wrapper">
+      <nav class="game-tabs" id="game-tabs" aria-label="Ontario Lotteries"></nav>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Left Panel: Game Details & Generation Controls -->
+      <section class="panel" aria-label="Game Configuration">
+        <div class="game-banner" id="game-banner"></div>
+        <div id="game-options"></div>
+        <div class="action-buttons">
+          <button type="button" class="primary-btn" id="generate-btn">
+            ✨ Generate Lucky Numbers
+          </button>
+          <button type="button" class="secondary-btn" id="quick-pick-all-btn">
+            🎟️ Mega-Slip: Pick All Ontario Lotteries
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Ticket Playslip Receipt -->
+      <section class="panel ticket-display-panel" aria-label="Generated Ticket Receipt">
+        <div id="ticket-display" style="width: 100%;">
+          <div class="ticket-receipt" id="current-receipt">
+            <div class="receipt-header">
+              <div class="receipt-brand">ONTARIO LOTTERY & GAMING</div>
+              <h3 class="receipt-title">READY TO PLAY</h3>
+              <div class="receipt-id">SELECT A GAME & CLICK GENERATE</div>
+              <div class="receipt-date">Authorized Ticket Simulator</div>
+            </div>
+            <div class="receipt-lines">
+              <p style="text-align: center; color: #666; font-size: 0.85rem; padding: 24px 0;">
+                Click "Generate Lucky Numbers" to simulate official ball draws with animated drops and audio effects.
+              </p>
+            </div>
+            <div class="receipt-footer">
+              19+ KNOW YOUR LIMIT, PLAY WITHIN IT.
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom History Section -->
+    <section class="panel history-section" aria-label="Recent Ticket History">
+      <div class="history-header">
+        <h3>Recent Generated Tickets</h3>
+        <button type="button" class="icon-btn" id="clear-history-btn">Clear History</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
+    </section>
+  </main>
+
+  <script src="./dist/bundle.js"></script>
+</body>
+</html>
