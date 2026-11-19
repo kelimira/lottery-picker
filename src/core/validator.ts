@@ -1,6 +1,8 @@
 import { createErr, createOk } from './result.js';
 import type { GameDefinition, GenerationOptions, LotteryError, Result } from './types.js';
 
+export const MAX_TICKET_LINES = 50;
+
 export interface ValidatedOptions {
   readonly lines: number;
   readonly includeEncore: boolean;
@@ -24,11 +26,11 @@ export function validateGenerationOptions(
     });
   }
 
-  if (lineCount > 50) {
+  if (lineCount > MAX_TICKET_LINES) {
     return createErr({
       code: 'INVALID_LINE_COUNT',
-      message: `Line count cannot exceed 50 per ticket generation. Received: ${lineCount}.`,
-      details: { lineCount, maxAllowed: 50 },
+      message: `Line count cannot exceed ${MAX_TICKET_LINES} per ticket generation. Received: ${lineCount}.`,
+      details: { lineCount, maxAllowed: MAX_TICKET_LINES },
     });
   }
 

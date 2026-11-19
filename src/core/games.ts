@@ -1,3 +1,46 @@
+/**
+ * Official Ontario Lottery & Gaming Corporation (OLG) Game Definitions
+ *
+ * Sourced from official OLG game rules & regulations:
+ * - OLG Official Portal: https://www.olg.ca
+ * - PlaySmart Ontario (Odds & Prize Payouts): https://www.playsmart.ca
+ *
+ * Key Ontario Lottery Specifications & Math Notes:
+ * 1. Lottario:
+ *    - Ticket price: $1.00 per play.
+ *    - Each $1.00 play officially includes TWO sets (lines) of 6 numbers from 1 to 45.
+ *    - Single-line jackpot odds: C(45, 6) = 1 in 8,145,060.
+ *    - Overall jackpot odds per $1.00 ticket (2 lines): 8,145,060 / 2 = 1 in 4,072,530.
+ *    - Early Bird Draw: Official OLG feature for tickets purchased before 11:59:59 PM ET Friday.
+ *      4 additional numbers drawn for a $50,000 prize pool (odds: approx 1 in 4,967).
+ *    - Draw Day: Every Saturday night at 10:30 PM ET.
+ * 2. Daily Keno:
+ *    - Player selects spot size from 2 to 10 out of 70 numbers.
+ *    - Draws held twice daily (Midday at 2:00 PM ET, Evening at 10:30 PM ET).
+ *    - Supports the official $1.00 ENCORE add-on with twice-daily draws.
+ * 3. Pick-2, Pick-3, Pick-4:
+ *    - Twice daily draws (Midday 2:00 PM ET, Evening 10:30 PM ET).
+ *    - Pick-2 straight match pays fixed $99 (1 in 100 odds).
+ *    - Pick-3 top prize is pari-mutuel based on a 50% prize pool (approx $500 on $1 straight play).
+ *    - Pick-4 $1 straight match pays fixed $5,000 (1 in 10,000 odds).
+ *    - All three Pick games support the official $1.00 ENCORE add-on.
+ * 4. Lotto Max:
+ *    - 7/50 balls. $5.00 play includes 3 lines of 7 numbers. Maxmillions at $50M+ jackpots.
+ * 5. Lotto 6/49:
+ *    - 6/49 balls. Classic $5M draw + Guaranteed Gold Ball Draw (progressive up to $68M).
+ * 6. Daily Grand:
+ *    - 5/49 balls + Grand Number from 1 to 7. Top prize: $1,000 a day for life.
+ * 7. Ontario 49:
+ *    - 6/49 balls, $1.00 play, fixed $2M jackpot.
+ * 8. Poker Lotto:
+ *    - 5 cards from 52-card deck. Instant terminal win up to $10,000 + nightly draw up to $100,000.
+ * 9. Encore:
+ *    - 7-digit lottery (0000000 to 9999999). 22 ways to win, top prize $1,000,000.
+ *
+ * NOTE: Jackpots, odds, and draw times are subject to change by OLG.
+ * Always verify official winning numbers, current jackpots, and prize conditions at olg.ca.
+ */
+
 import { createErr, createOk } from './result.js';
 import type { GameDefinition, LotteryError, Result } from './types.js';
 
@@ -15,8 +58,6 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 7,
     minNumber: 1,
     maxNumber: 50,
-    bonusBallCount: 1,
-    bonusFromRemaining: true,
     supportsEncore: true,
     specialOption: {
       id: 'maxmillions',
@@ -25,6 +66,7 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     },
     topPrize: '$80,000,000',
     odds: '1 in 33,294,800',
+    source: 'https://www.olg.ca/en/lottery/play-lotto-max-encore.html',
     theme: {
       primary: '#008744',
       secondary: '#005a2e',
@@ -46,8 +88,6 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 6,
     minNumber: 1,
     maxNumber: 49,
-    bonusBallCount: 1,
-    bonusFromRemaining: true,
     supportsEncore: true,
     specialOption: {
       id: 'gold-ball',
@@ -56,6 +96,7 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     },
     topPrize: '$68,000,000 (Gold Ball)',
     odds: '1 in 13,983,816',
+    source: 'https://www.olg.ca/en/lottery/play-lotto-649-encore.html',
     theme: {
       primary: '#00529b',
       secondary: '#003366',
@@ -77,11 +118,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 5,
     minNumber: 1,
     maxNumber: 49,
-    bonusBallCount: 1,
-    bonusFromRemaining: false, // Grand Number is drawn from 1 to 7 separately
     supportsEncore: true,
     topPrize: '$1,000 A Day for Life',
     odds: '1 in 13,348,188',
+    source: 'https://www.olg.ca/en/lottery/play-daily-grand-encore.html',
     theme: {
       primary: '#007a87',
       secondary: '#00545d',
@@ -103,11 +143,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 6,
     minNumber: 1,
     maxNumber: 49,
-    bonusBallCount: 1,
-    bonusFromRemaining: true,
     supportsEncore: true,
     topPrize: '$2,000,000 Fixed',
     odds: '1 in 13,983,816',
+    source: 'https://www.olg.ca/en/lottery/play-ontario-49-encore.html',
     theme: {
       primary: '#b31b1b',
       secondary: '#701010',
@@ -129,16 +168,15 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 6,
     minNumber: 1,
     maxNumber: 45,
-    bonusBallCount: 1,
-    bonusFromRemaining: true,
     supportsEncore: true,
     specialOption: {
       id: 'early-bird',
       name: 'Early Bird',
-      description: '4 bonus numbers for tickets bought before Friday 10:30 PM',
+      description: '4 bonus numbers for tickets bought before Friday 11:59:59 PM ET ($50,000 pool)',
     },
     topPrize: '$250,000+ Progressive',
-    odds: '1 in 4,072,530',
+    odds: '1 in 4,072,530 per $1 play (2 lines included; 1 in 8,145,060 per line)',
+    source: 'https://www.olg.ca/en/lottery/play-lottario-encore.html',
     theme: {
       primary: '#4a154b',
       secondary: '#2e0d2f',
@@ -160,11 +198,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 2,
     minNumber: 0,
     maxNumber: 9,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
-    supportsEncore: false,
+    supportsEncore: true,
     topPrize: '$99.00',
     odds: '1 in 100',
+    source: 'https://www.olg.ca/en/lottery/play-pick-2.html',
     theme: {
       primary: '#e65100',
       secondary: '#bf360c',
@@ -186,11 +223,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 3,
     minNumber: 0,
     maxNumber: 9,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
-    supportsEncore: false,
-    topPrize: '$500.00',
+    supportsEncore: true,
+    topPrize: 'Pari-Mutuel (~$500.00 on $1 Straight)',
     odds: '1 in 1,000',
+    source: 'https://www.olg.ca/en/lottery/play-pick-3.html',
     theme: {
       primary: '#0277bd',
       secondary: '#01579b',
@@ -212,11 +248,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 4,
     minNumber: 0,
     maxNumber: 9,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
-    supportsEncore: false,
+    supportsEncore: true,
     topPrize: '$5,000.00',
     odds: '1 in 10,000',
+    source: 'https://www.olg.ca/en/lottery/play-pick-4.html',
     theme: {
       primary: '#558b2f',
       secondary: '#33691e',
@@ -238,12 +273,11 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 10,
     minNumber: 1,
     maxNumber: 70,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
     supportsEncore: true,
     kenoSpots: [2, 3, 4, 5, 6, 7, 8, 9, 10],
     topPrize: '$2,500,000 (10 Spot $10 play)',
     odds: '1 in 2,147,181 (10 of 10)',
+    source: 'https://www.olg.ca/en/lottery/play-daily-keno.html',
     theme: {
       primary: '#ad1457',
       secondary: '#6a1b9a',
@@ -265,8 +299,6 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 5,
     minNumber: 1,
     maxNumber: 52,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
     supportsEncore: false,
     specialOption: {
       id: 'all-in',
@@ -275,6 +307,7 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     },
     topPrize: '$100,000 Nightly',
     odds: '1 in 2,598,960 (Royal Flush)',
+    source: 'https://www.olg.ca/en/lottery/play-poker-lotto.html',
     theme: {
       primary: '#1b5e20',
       secondary: '#0b3d11',
@@ -296,11 +329,10 @@ export const ONTARIO_GAMES: readonly GameDefinition[] = [
     mainBallCount: 7,
     minNumber: 0,
     maxNumber: 9,
-    bonusBallCount: 0,
-    bonusFromRemaining: false,
     supportsEncore: false,
     topPrize: '$1,000,000',
     odds: '1 in 10,000,000',
+    source: 'https://www.olg.ca/en/lottery/play-encore.html',
     theme: {
       primary: '#6a1b9a',
       secondary: '#4a148c',

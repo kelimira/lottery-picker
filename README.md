@@ -17,10 +17,12 @@ A fancy, HTML5-based lottery picker and ticket simulator for all 11 lotteries av
   - **Poker Lotto**: 5 unique playing cards from 52-card standard deck with card suits and rank graphics.
   - **Encore**: 7-digit add-on (0000000–9999999).
 - **Cryptographically Secure Randomness**: Uses `globalThis.crypto.getRandomValues()` with unbiased rejection sampling for uniform distribution.
+- **Custom Number Filtering**: Include favorite lucky numbers in the primary line or exclude unwanted/cold numbers across all generated lines.
 - **Audio Synthesizer**: Web Audio API ball drop pops, click sounds, and jackpot sweeps with zero external sound files.
 - **Playslip Formatting & Print Support**: Authentic receipt view matching official terminal slips with full print layout (`@media print`).
-- **History & Clipboard**: Copy slips to clipboard, save history locally in localStorage.
-- **Mega-Slip Generator**: Generate an all-lottery quick-pick slip in one click.
+- **History & Clipboard**: Copy slips to clipboard with automatic fallback, persistent validated history in localStorage with corruption defense.
+- **Mega-Slip Generator**: Generate an all-lottery quick-pick slip in one click with concurrency protection.
+- **Official OLG Specifications**: Sourced directly from official regulations at [olg.ca](https://www.olg.ca) and [playsmart.ca](https://www.playsmart.ca). Note that jackpots, odds, and schedules are subject to change by OLG. Always verify official winning numbers and conditions at olg.ca.
 
 ## Quick Start
 

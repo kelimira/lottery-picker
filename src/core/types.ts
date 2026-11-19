@@ -67,13 +67,12 @@ export interface GameDefinition {
   readonly mainBallCount: number;
   readonly minNumber: number;
   readonly maxNumber: number;
-  readonly bonusBallCount: number;
-  readonly bonusFromRemaining: boolean;
   readonly supportsEncore: boolean;
   readonly kenoSpots?: readonly number[];
   readonly specialOption?: SpecialOption;
   readonly topPrize: string;
   readonly odds: string;
+  readonly source: string;
   readonly theme: GameTheme;
 }
 
